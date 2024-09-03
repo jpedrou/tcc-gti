@@ -1,6 +1,6 @@
 # TÉCNICAS DE *MACHINE LEARNING* E MELHORIAS DE PERFORMANCE PARA O *PLUGIN SMART-MAP*
 
-O Trabalho foi desenvolvido com a finalidade de otimizar o tempo de execução das operações de carregamento e processamento de dados do plugin Smart-Map do QGIS. [Repositório oficial do plugin](https://github.com/gustavowillam/SmartMapPlugin).
+O Trabalho foi desenvolvido com a finalidade de otimizar o tempo de execução das operações de carregamento e processamento de dados do *plugin Smart-Map* do QGIS. [Repositório oficial do plugin](https://github.com/gustavowillam/SmartMapPlugin).
 
 ## <img align="center" width="50px" src="https://blog.qgis.org/wp-content/uploads/2016/12/qgis-icon_anita02.png" /> *Smart-Map* 
 
@@ -46,3 +46,34 @@ O conceito de paginação no contexto de grandes conjuntos de dados envolve divi
 
 
 <img src="https://media.licdn.com/dms/image/D5612AQGXiCbdSEcocw/article-cover_image-shrink_720_1280/0/1704707353160?e=2147483647&v=beta&t=19WgitqhCLY_vFi-YhDu_2L-0e59BTVg1Qujwtw53-s"/>
+
+
+## Referências
+
+PEREIRA,Gustavo Willam.Ferramentas computacionais para suporte a decisão no mapeamento de atributos do solo. 2021. Tese – Universidade Federal de Viçosa, Viçosa, 2021. Disponível em:https://locus.ufv.br//handle/123456789/29872. Acesso em: 22 ago.2024.
+
+ORACLE. What is Machine Learning?. Disponível em: https://www.oracle.com/br/artificial-intelligence/machine-learning/what-is-machine-learning/. Acesso em: 22 ago. 2024.
+
+REMÍGIO, M. Máquinas de vetores de suporte (SVM). Medium, 2020. Disponível em: https://medium.com/@msremigio/m%C3%A1quinas-de-vetores-de-suporte-svm-77bb114d02fc. Acesso em: 22 ago. 2024.
+
+ESCOVEDO, T.; KOSHIYAMA, A. S. Introdução a Data Science — Algoritmos de Machine Learning e métodos de análise. São Paulo: Ed. Casa do Código, 2020.
+
+ESCOVEDO, T. Machine Learning: conceitos e modelos. Medium, 2020. Disponível em: https://tatianaesc.medium.com/machine-learning-conceitos-e-modelos-f0373bf4f445. Acesso em: 22 ago. 2024.
+
+ANALYTICS VIDHYA. Support Vector Machines (SVM) – A Complete Guide for Beginners. 2021. Disponível em: https://www.analyticsvidhya.com/blog/2021/10/support-vector-machinessvm-a-complete-guide-for-beginners/. Acesso em: 22 ago. 2024.
+
+MEDIUM. The Kernel Trick. Medium, 2020. Disponível em: https://towardsdatascience.com/the-kernel-trick-c98cdbcaeb3f. Acesso em: 22 ago. 2024.
+
+ZHU, X. What is the Kernel Trick? Why is it Important?. Medium, 2021. Disponível em: https://medium.com/@zxr.nju/what-is-the-kernel-trick-why-is-it-important-98a98db0961d. Acesso em: 22 ago. 2024.
+
+STACKABUSE. Understanding SVM Hyperparameters. 2021. Disponível em: https://stackabuse.com/understanding-svm-hyperparameters/. Acesso em: 22 ago. 2024.
+
+FARAMARZI, N. Support Vector Regressor: Theory and Coding Exercise in Python. Medium, 2020. Disponível em: https://medium.com/@niousha.rf/support-vector-regressor-theory-and-coding-exercise-in-python-ca6a7dfda927. Acesso em: 22 ago. 2024.
+
+SCIKIT-LEARN. Cross-Validation. Disponível em: https://scikit-learn.org/stable/modules/cross_validation.html. Acesso em: 22 ago. 2024.
+
+PATEL, B. Resampling Methods. Bijen Patel, 2022. Disponível em: https://www.bijenpatel.com/guide/islr/resampling-methods/. Acesso em: 22 ago. 2024.
+
+WIKIPEDIA. Cross-validation (statistics). 2024. Disponível em: https://en.wikipedia.org/wiki/Cross-validation_(statistics). Acesso em: 22 ago. 2024.
+
+TEAMCODE. A Step-by-Step Guide for Pagination in Python. Medium, 2023. Disponível em: https://medium.com/@teamcode20233/a-step-by-step-guide-for-pagination-in-python-f7da5f06767d. Acesso em: 22 ago. 2024.
