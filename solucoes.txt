@@ -1,0 +1,326 @@
+
+
+#1 Alteração do limite máximo de pontos para realizar o Resampling
+
+self.maximum_points_plugin = 18000
+
+
+
+#2 Trocando técnica nativa do QGIS de leitura de dados vetoriais pelo Pandas
+
+    lyrCRS = selectedLayer.crs() 
+
+    fields = selectedLayer.fields()
+    data = []
+
+    for feature in selectedLayer.getFeatures():
+	feature_data = {}
+	for field in fields:
+	    feature_data[field.name()] = feature[field.name()]
+	data.append(feature_data)
+
+    df = pd.DataFrame(data)
+
+    df.to_parquet(os.path.join(self.path_absolute, '0_Dados.parquet'), compression='gzip', index=None)
+    # QgsVectorFileWriter.writeAsVectorFormat(selectedLayer, os.path.join(self.path_absolute , '0_Dados.csv'), "utf-8", lyrCRS, "CSV")  
+
+    progress.setValue(9)               
+    progress.close() 
+
+    filename = os.path.join(self.path_absolute , '0_Dados.parquet')  
+
+    self.df  = pd.read_parquet(filename) 
+
+
+#3 Melhoria do carregamento dos dados
+
+
+	try:
+
+	    page_size = 5000
+	    total_rows = len(df1)
+	    num_pages = -(-total_rows // page_size)
+
+	    num_cols = df1.shape[1]
+	    self.dlg.datatable_atributos.setColumnCount(num_cols)
+
+	    for page in range(num_pages):
+
+		start_index = page * page_size
+		end_index = min((page + 1) * page_size, total_rows)
+
+		page_data = df1.iloc[start_index:end_index].values
+		num_rows = page_data.shape[0]
+
+		self.dlg.datatable_atributos.setRowCount(start_index + num_rows)
+
+		for row_index, row in enumerate(page_data):
+		    for col_index, value in enumerate(row):
+		        if col_index == 0:
+		            formatted_value = f'{value:.0f}'
+		        elif isinstance(value, float):
+		            formatted_value = f'{value:.3f}'
+		        else:
+		            formatted_value = str(value)
+
+		        item = QTableWidgetItem(formatted_value)
+		        if start_index + row_index in self.list_index_outlier:
+		            item.setForeground(QBrush(QColor(255, 0, 0)))
+
+		        self.dlg.datatable_atributos.setItem(start_index + row_index, col_index, item)
+
+
+		progress.setMaximum(total_rows)
+		progress.setValue(end_index)
+		if page % 10 == 0:
+		    QApplication.processEvents()
+
+
+	except Exception as e:
+	    msg_box = QMessageBox()
+	    msg_box.setWindowIcon(QtGui.QIcon(self.icon_path))
+	    msg_box.setIcon(QMessageBox.Warning)
+	    msg_box.setWindowTitle(self.tr('Mensagem'))
+	    msg_box.setText(self.tr(f'Erro ao carregar tabela: {e}'))
+	    msg_box.exec_()
+
+
+
+
+
+
+
+#4 Melhoria na função pushButton_Validacao_Cruzada_SVM_clicked
+        
+        
+        
+	self.svr = svm.SVR(kernel = 'rbf', C = C_average, gamma = gamma_average)
+
+
+        ###################################################################
+        #Validação Cruzada
+
+        features = self.norm.fit_transform(features)
+        
+        kf = KFold(n_splits=3, shuffle=True, random_state=42)
+        
+        predictions = cross_val_predict(self.svr, features, labels, cv=kf, n_jobs=-1)
+
+        data_CV_SVM = np.column_stack((features[:, 0], features[:, 1], labels, predictions))
+
+        # Cria o DataFrame
+        df_CV_SVM = pd.DataFrame(data_CV_SVM, columns=['Coord_X', 'Coord_Y', 'Z.Obs.', 'Z.Predito'])
+        df_CV_SVM.to_csv(os.path.join(self.path_absolute, '1_SVM_' + self.VTarget_FileName + '_CV.csv'), sep=',', index=False, encoding='utf-8')
+
+        # Atualiza a tabela na interface
+        self.dlg.datatable_validacao_cruzada_SVM.setColumnCount(len(df_CV_SVM.columns))
+        self.dlg.datatable_validacao_cruzada_SVM.setRowCount(len(df_CV_SVM.index))
+
+        # Preenche o cabeçalho
+        try:
+            cols = list(df_CV_SVM.columns.values)
+            self.dlg.datatable_validacao_cruzada_SVM.setHorizontalHeaderLabels(cols)
+        except AttributeError:
+            msg_box = QMessageBox()
+            msg_box.setWindowIcon(QtGui.QIcon(self.icon_path))
+            msg_box.setIcon(QMessageBox.Warning)
+            msg_box.setWindowTitle(self.tr('Mensagem'))
+            msg_box.setText(self.tr('Erro ao carregar tabela. Valor Inválido!'))
+            msg_box.exec_()
+
+        # Preenche as linhas da tabela de forma otimizada
+        try:
+            table_widget = self.dlg.datatable_validacao_cruzada_SVM
+            table_widget.setUpdatesEnabled(False)  # Desativa as atualizações da tabela temporariamente
+
+            items = []
+            for i in range(len(df_CV_SVM.index)):
+                row_items = []
+                for j in range(len(df_CV_SVM.columns)):
+                    valor = df_CV_SVM.iloc[i, j]
+                    if isinstance(valor, float):
+                        valor = f'{valor:.3f}'
+                    row_items.append(QTableWidgetItem(str(valor)))
+                items.append(row_items)
+                progress.setValue(i + 1)
+            
+            for i, row_items in enumerate(items):
+                for j, item in enumerate(row_items):
+                    table_widget.setItem(i, j, item)
+
+            table_widget.setUpdatesEnabled(True)  # Reativa as atualizações da tabela
+            table_widget.viewport().update()  # Atualiza a visualização da tabela
+
+        except AttributeError:
+            msg_box = QMessageBox()
+            msg_box.setWindowIcon(QtGui.QIcon(self.icon_path))
+            msg_box.setIcon(QMessageBox.Warning)
+            msg_box.setWindowTitle('Mensagem')
+            msg_box.setText('Erro ao carregar tabela. Valor Inválido!')
+            msg_box.exec_()
+
+        self.dlg.datatable_validacao_cruzada_SVM.resizeColumnsToContents()
+        self.dlg.datatable_validacao_cruzada_SVM.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
+
+        # Calcula as estatísticas de regressão
+        RMSE_lib, R2_RCV, regressor, R2_Elp, lccc = functions.calculate_statistics(predictions, labels)
+
+        RMSE_lib = f'{RMSE_lib:.3f}'
+        R2_RCV = f'{R2_RCV:.3f}'
+        intercept = regressor.intercept_[0]
+        slope = regressor.coef_[0][0]
+
+        # Define os limites do gráfico de validação cruzada
+        x_min = min(predictions.min(), labels.min())
+        x_max = max(predictions.max(), labels.max())
+        x_min = max(0, x_min - abs(intercept))
+        x_max = x_max + abs(intercept)
+
+        plt5.close()
+        plt5.title(self.tr('Validação Cruzada - SVM') + '   ' + self.tr('RMSE:') + ' ' + str(RMSE_lib) + '   $R^2$ : ' + str(R2_RCV))
+        plt5.xlim(x_min, x_max)
+        plt5.ylim(x_min, x_max)
+        plt5.xlabel(self.tr('Valor Predito') + ' - ' + self.v_target)
+        plt5.ylabel(self.tr('Valor Observado') + ' - ' + self.v_target)
+        plt5.scatter(predictions, labels, marker='s', color='blue')
+        plt5.plot([x_min, x_max], [x_min, x_max], linestyle=':', color='black')
+
+        line = slope * np.array([x_min, x_max]) + intercept
+        if intercept >= 0:
+            plt5.plot([x_min, x_max], line, color='black', label=f'y={slope:.3f}x+{intercept:.3f}')
+        else:
+            plt5.plot([x_min, x_max], line, color='black', label=f'y={slope:.3f}x-{abs(intercept):.3f}')
+
+        plt5.legend(loc='upper left')
+        plt5.legend()
+        plt5.ticklabel_format(style='plain', useOffset=False, axis='both')
+
+        # Salva o gráfico e atualiza a interface
+        plt5.savefig(os.path.join(self.path_absolute, '1_SVM_' + self.VTarget_FileName + '_CV.png'))
+        pixmap5 = QPixmap(os.path.join(self.path_absolute, '1_SVM_' + self.VTarget_FileName + '_CV.png'))
+        self.dlg.label_validacao_cruzada_SVM.show()
+        self.dlg.label_validacao_cruzada_SVM.setPixmap(pixmap5)
+
+        if self.dlg.checkBox_Qgis_Maps.isChecked():
+            plt5.show()
+
+        progress.close()
+        self.Validacao_Cruzada_SVM = True
+
+
+
+
+#5 pushButton_Validacao_Cruzada_OK_clicked (validação cruzada Krigagem)
+
+
+	    splits = len(self.xy)
+	    if splits > 500:
+		splits = 2
+	    
+	    kf = KFold(n_splits=splits, shuffle=True, random_state = 42)
+
+	    labels_OK_CV = np.zeros(len(self.xy))
+
+	    for train_index, test_index in kf.split(self.xy):
+		xy_train, xy_test = self.xy.iloc[train_index], self.xy.iloc[test_index]
+		z_train, z_test = self.z.iloc[train_index], self.z.iloc[test_index]
+
+		OK = kriging.OrdinaryKriging(xy_train, z_train, variogram_model=Model, variogram_parameters=var_params)
+
+		coordxy = [[xy_test.iloc[0][0], xy_test.iloc[0][1]]]
+		z_est_py, ss = OK.execute(coordxy, n_closest_points=n_neig, radius=raio_busca)
+
+		labels_OK_CV[test_index] = z_est_py[0]
+
+	    # Calculando métricas de avaliação
+	    RMSE_lib, R2_RCV, regressor, R2_Elp, lccc = functions.calculate_statistics(self.z.to_numpy(), np.array(labels_OK_CV))
+
+	    # Salvando os resultados em um arquivo CSV
+	    data_CV_OK = np.column_stack((self.xy.iloc[:, 0], self.xy.iloc[:, 1], self.z, labels_OK_CV))
+	    df_CV_OK = pd.DataFrame(data_CV_OK, columns=['Coord_X', 'Coord_Y', 'Z.Obs.', 'Z.Predito'])
+	    df_CV_OK.to_csv(os.path.join(self.path_absolute, '1_Krig_' + self.VTarget_FileName + '_CV.csv'), sep=',', index=False, encoding='utf-8')
+
+	    # Atualizando a interface gráfica com os resultados da validação cruzada
+	    self.dlg.datatable_validacao_cruzada_OK.setColumnCount(len(df_CV_OK.columns))
+	    self.dlg.datatable_validacao_cruzada_OK.setRowCount(len(df_CV_OK))
+
+	    # Preenchendo o cabeçalho da tabela
+	    try:
+		cols = list(df_CV_OK.columns.values)
+		self.dlg.datatable_validacao_cruzada_OK.setHorizontalHeaderLabels(cols)
+	    except AttributeError:
+		msg_box = QMessageBox()
+		msg_box.setWindowIcon(QtGui.QIcon(self.icon_path))
+		msg_box.setIcon(QMessageBox.Warning)
+		msg_box.setWindowTitle(self.tr('Mensagem'))
+		msg_box.setText(self.tr('Erro ao carregar tabela. Valor Inválido!'))
+		msg_box.exec_()
+
+	    # Preenchendo as linhas da planilha na interface gráfica
+	    try:
+		for i in range(len(df_CV_OK.index)):  # linhas
+		    for j in range(len(df_CV_OK.columns)):  # colunas
+		        valor = df_CV_OK.iloc[i, j]
+		        if isinstance(valor, float):
+		            valor = '%.3f' % valor
+		        valor = QTableWidgetItem(str(valor))
+		        self.dlg.datatable_validacao_cruzada_OK.setItem(i, j, valor)
+	    except AttributeError:
+		msg_box = QMessageBox()
+		msg_box.setWindowIcon(QtGui.QIcon(self.icon_path))
+		msg_box.setIcon(QMessageBox.Warning)
+		msg_box.setWindowTitle(self.tr('Mensagem'))
+		msg_box.setText(self.tr('Erro ao carregar tabela. Valor Inválido!'))
+		msg_box.exec_()
+
+	    # Ajustando o tamanho das colunas na tabela
+	    self.dlg.datatable_validacao_cruzada_OK.resizeColumnsToContents()
+	    self.dlg.datatable_validacao_cruzada_OK.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)  # tornando a tabela somente leitura
+
+	    # Plotando o gráfico da validação cruzada
+	    plt5.figure()
+	    plt5.scatter(labels_OK_CV, self.z, marker='s', color='blue')
+	    plt5.plot([self.z.min(), self.z.max()], [self.z.min(), self.z.max()], linestyle=':', color='black')
+	    plt5.xlabel('Valor Predito')
+	    plt5.ylabel('Valor Observado')
+	    plt5.title(f'Cross Validation - RMSE: {RMSE_lib:.3f}, R²: {R2_RCV:.3f}')
+	    plt5.grid(True)
+	    plt5.tight_layout()
+
+	    # Salvando o gráfico em um arquivo PNG
+	    plt5.savefig(os.path.join(self.path_absolute, f'1_Krig_{self.VTarget_FileName}_CV.png'))
+
+	    # Exibindo o gráfico na interface gráfica, se a opção estiver marcada
+	    if self.dlg.checkBox_Qgis_Maps.isChecked():
+		plt5.show()
+
+	    # Atualizando elementos da interface gráfica
+	    self.dlg.label_Variograma.show()
+	    pixmap5 = QPixmap(os.path.join(self.path_absolute, f'1_Krig_{self.VTarget_FileName}_CV.png'))
+	    self.dlg.label_validacao_cruzada_OK.show()
+	    self.dlg.label_validacao_cruzada_OK.setPixmap(pixmap5)
+	    self.Validacao_Cruzada_OK = True
+	    self.dlg.tabWidget_Interpolacao_OK.setCurrentIndex(1)
+
+	    # Fechando a barra de progresso, se estiver aberta
+	    progress.close()
+
+
+
+
+
+#6 pushButton_SVM_clicked (Gerar mapa interpolado)
+
+        k_folds = round(len(self.data)/20) 
+
+        if k_folds < 2: 
+           k_folds = 2  
+        elif k_folds > 5: 
+           k_folds = 2
+
+
+
+
+
+
+
