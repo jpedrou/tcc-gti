@@ -48,6 +48,10 @@ O conceito de paginação no contexto de grandes conjuntos de dados envolve divi
 <img src="https://media.licdn.com/dms/image/D5612AQGXiCbdSEcocw/article-cover_image-shrink_720_1280/0/1704707353160?e=2147483647&v=beta&t=19WgitqhCLY_vFi-YhDu_2L-0e59BTVg1Qujwtw53-s"/>
 
 
+## Licença GPL-3.0
+
+This project is free; you can redistribute it and/or modify it under the terms of the [GNU General Public License](https://www.gnu.org/licenses/gpl-3.0.pt-br.html) as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
+
 ## Referências
 
 PEREIRA,Gustavo Willam.Ferramentas computacionais para suporte a decisão no mapeamento de atributos do solo. 2021. Tese – Universidade Federal de Viçosa, Viçosa, 2021. Disponível em:https://locus.ufv.br//handle/123456789/29872. Acesso em: 22 ago.2024.
