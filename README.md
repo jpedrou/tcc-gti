@@ -16,11 +16,11 @@ Com essas melhorias, observou-se um aumento significativo na velocidade de execu
 
 ## Tecnologias Usadas
 
-- [Python](): Linguagem de programação utilizada para o desenvolvimento original da aplicação.
-- [Pandas](): Biblioteca do Python muito utilizada para carregamento de dados.
-- [Scikit-Learn](): Biblioteca amplamente utilizada para lidar com processos que envolvam *Machine Learning*.
-- [Visual Studio Code](): IDE escolhida para o desenvolvimento da aplicação.
-- [Linux (Ubuntu)](): Sistema operacional utilizado para testar e desenvolver o projeto. Versão usada: **22.0.4**.
+- [Python](https://www.python.org/): Linguagem de programação utilizada para o desenvolvimento original da aplicação.
+- [Pandas](https://pandas.pydata.org/): Biblioteca do Python muito utilizada para carregamento de dados.
+- [Scikit-Learn](https://scikit-learn.org/stable/): Biblioteca amplamente utilizada para lidar com processos que envolvam *Machine Learning*.
+- [Visual Studio Code](https://code.visualstudio.com/): IDE escolhida para o desenvolvimento da aplicação.
+- [Linux (Ubuntu)](https://ubuntu.com/): Sistema operacional utilizado para testar e desenvolver o projeto. Versão usada: **22.0.4**.
 
 
 **Especificações da máquina utilizada para desenvolvimento**
