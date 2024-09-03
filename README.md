@@ -25,6 +25,24 @@ Com essas melhorias, observou-se um aumento significativo na velocidade de execu
 
 **Especificações da máquina utilizada para desenvolvimento**
 
-Computador equipado com processador de `12th Gen Intel® Core™ i5-12450H × 12`,  `20GB de RAM` e um `SSD de 500GB`.
+Computador equipado com:
+- `processador de 12th Gen Intel® Core™ i5-12450H × 12`,  
+- `20GB de RAM`,
+- `SSD de 500GB`.
 
-## Técnicas Utilizadas
+## Técnicas utilizadas para otimizar os processos
+
+### *K-Fold Cross-Validation*
+
+Nesse método, os dados são divididos separados em *k* subconjuntos, ou *folds*. O modelo é treinado *k* vezes, e em cada uma delas utilizando *k-1 folds* para treino e o *fold* restante para teste. Dessa forma, existente um controle maior do número de treinos do algoritmo, o que contribui drasticamente para a redução do uso de memória do sistema.
+
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/K-fold_cross_validation_EN.svg/1920px-K-fold_cross_validation_EN.svg.png"/>
+
+
+### Paginação de dados
+
+O conceito de paginação no contexto de grandes conjuntos de dados envolve dividir os dados em partes menores e mais gerenciáveis, chamadas de páginas ou blocos (chunks). Essa técnica pode ser especialmente útil, pois processar blocos menores de registros é mais rápido do que carregar o dataset por completo, além de reduzir a carga computacional no sistema.
+
+
+<img src="https://media.licdn.com/dms/image/D5612AQGXiCbdSEcocw/article-cover_image-shrink_720_1280/0/1704707353160?e=2147483647&v=beta&t=19WgitqhCLY_vFi-YhDu_2L-0e59BTVg1Qujwtw53-s"/>
